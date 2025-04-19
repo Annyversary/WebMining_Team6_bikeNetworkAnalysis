@@ -6,7 +6,23 @@ The `data.zip` archive contains GML files for the years 2020 through 2024, split
 In total, the `data` folder contains approximately **2 GB** of data, which exceeds the file size limit for uploading to GitHub.  
 To access and transform the data, please follow these steps:
 
-1. Unzip the `data.zip` file to extract the data.
-2. Open and run the notebook located at `src/transform_GML_into_graphML.ipynb`.
-3. The script will then automatically transform the data into the appropriate format.
+1. **Unzip the `data.zip` file**  
+   Open PowerShell or CMD and run the following command to extract the contents of `data.zip`:
+   ```bash
+   tar -xf data.zip
+
+2. **Navigate to the script directory**
+    Change the directory to where the transformation script is located:
+    ```bash
+    cd src\utils\wrapper
+
+3. **Run the transformation script in Jupyter Notebook**
+    Launch Jupyter Notebook and open the transform_GML_into_graphML.ipynb file:
+    ```bash
+    jupyter notebook transform_GML_into_graphML.ipynb
+
+Once the notebook is open, execute all cells to transform the GML files into the appropriate GraphML format.
+
+
+
 
