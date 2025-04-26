@@ -12,10 +12,14 @@ To access and transform the data, please follow these steps:
 
 2. **Convert GML files to GraphML format**
     ```bash
-    jupyter nbconvert --to notebook --execute src\utils\wrapper\transform_GML_into_graphML.ipynb --inplace
+    python src\utils\wrapper\transform_GML_into_graphML.py
 
 3. **Generate training and validation splits**
     ```bash
-    jupyter nbconvert --to notebook --execute src\utils\data_splits\create_training_and_validation_data.ipynb--inplace
+    python src\utils\data_splits\create_training_and_validation_data.py
+
+4. **Generate test set**
+    ```bash
+    python src\utils\data_splits\create_test_data.py
 
 
