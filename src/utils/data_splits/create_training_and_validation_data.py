@@ -6,34 +6,34 @@ import torch
 sys.path.append("src/utils")
 
 from torch_geometric.data import Batch
-from normalize_data.normalize_train_val_data import normalize_feature
+from data_splits.normalize_train_val_data import normalize_feature
 from helper_functions.load_graphml_files import load_graphml_files
-from helper_functions.print_datasplit_info import print_batch_shape
+from data_splits.print_datasplit_info import print_batch_shape
 
 def split_train_val(data_list, val_ratio=0.2, seed=42, edge_attr_key_index=4):
     """
-    Splits a list of PyTorch Geometric Data objects into training and validation sets
+    Splits a list of PyTorch Geometric Data objects into training and validation sets 
     for edge regression tasks.
 
     Parameters:
     -----------
     data_list : list of torch_geometric.data.Data
         List of graphs to be split into training and validation sets.
-
+    
     val_ratio : float, optional (default=0.2)
         Proportion of edges to be used for validation in each graph.
-
+    
     seed : int, optional (default=42)
         Random seed for reproducibility.
-
+    
     edge_attr_key_index : int, optional (default=4)
-        The index of the edge attribute that should be predicted (e.g., 'tracks').
+        The index of the edge attribute that should be predicted (e.g., 'tracks'). 
         This attribute will be used as the target (`y`) for the regression task.
-
+    
     Returns:
     --------
     train_data, val_data : torch_geometric.data.Batch
-        Batched training and validation data containing the graphs' edge indices,
+        Batched training and validation data containing the graphs' edge indices, 
         edge attributes, and the target edge attribute (`y`) for regression.
     """
 
@@ -58,7 +58,7 @@ def split_train_val(data_list, val_ratio=0.2, seed=42, edge_attr_key_index=4):
         train_data = data.clone()
         train_data.edge_index = edge_index[:, train_idx]
         train_data.edge_attr = torch.cat([edge_attr[train_idx][:, :edge_attr_key_index], edge_attr[train_idx][:, edge_attr_key_index+1:]], dim=1)
-        train_data.y = edge_attr[train_idx][:, edge_attr_key_index]
+        train_data.y = edge_attr[train_idx][:, edge_attr_key_index]  
 
         # Validation Data
         val_data = data.clone()
@@ -100,7 +100,7 @@ def main(years=[2021, 2022, 2023], val_ratio=0.2):
     --------
     None
     """
-
+    
     save_dir = os.path.join("data", "data_splits")
     os.makedirs(save_dir, exist_ok=True)
     train_save_path = os.path.join(save_dir, "train_data.pt")
@@ -108,13 +108,13 @@ def main(years=[2021, 2022, 2023], val_ratio=0.2):
 
     # Load GraphML files for the specified years and convert to PyTorch Geometric Data objects
     data_list = load_graphml_files(years)
-
+    
     # Split data into train and validation sets
     train_data, val_data = split_train_val(data_list, val_ratio=val_ratio)
-
+    
     # Normalize features in the training and validation data
     train_data, val_data = normalize_feature(train_data, val_data)
-
+    
     print("\nTrain Data Statistics:")
     print_batch_shape(train_data)
     print("\nValidation Data Statistics:")
