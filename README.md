@@ -6,19 +6,23 @@ The `data.zip` archive contains GML files for the years 2020 through 2024, split
 In total, the `data` folder contains approximately **2 GB** of data, which exceeds the file size limit for uploading to GitHub.  
 To access and transform the data, please follow these steps:
 
-1. **Unzip the `data.zip` archive**  
+1. **Install the requirements**  
+   ```bash
+   pip install -r requirements.txt
+   
+2. **Unzip the `data.zip` archive**  
    ```bash
    tar -xf data.zip
 
-2. **Convert GML files to GraphML format**
+3. **Convert GML files to GraphML format**
     ```bash
     python src\utils\wrapper\transform_GML_into_graphML.py
 
-3. **Generate training and validation splits**
+4. **Generate training and validation splits**
     ```bash
     python src\utils\data_splits\create_training_and_validation_data.py
 
-4. **Generate test set**
+5. **Generate test set**
     ```bash
     python src\utils\data_splits\create_test_data.py
 
