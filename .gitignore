@@ -4,3 +4,5 @@
 *.graphml
 *.gml
 *.gfs
+__pycache__/
+*.pyc
