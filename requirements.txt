@@ -1,0 +1,10 @@
+torch
+torch_geometric
+scikit-learn
+networkx
+numpy
+pandas
+geopandas
+joblib
+tqdm
+
