@@ -16,13 +16,17 @@ To access and transform the data, please follow these steps:
 
 3. **Convert GML files to GraphML format**
     ```bash
-    python src\utils\wrapper\transform_GML_into_graphML.py
+    python src\utils\data_splits\wrapper\transform_GML_into_graphML.py
 
-4. **Generate training and validation splits**
+4. **Generate training and validation splits using 2021-2023 for training and validation**
     ```bash
     python src\utils\data_splits\create_training_and_validation_data.py
 
-5. **Generate test set**
+5. **Generate training and validation splits using 2021-2022 for training and 2023 for validation**
+    ```bash
+    python src\utils\data_splits\create_timed_data_splits.py
+
+6. **Generate test set**
     ```bash
     python src\utils\data_splits\create_test_data.py
 
