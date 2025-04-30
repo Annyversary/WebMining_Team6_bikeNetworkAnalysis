@@ -1,8 +1,6 @@
 import networkx as nx
 import os
-import sys
 
-sys.path.append("src/utils")
 from wrapper.transform_networkx_into_pyg import transform_networkx_into_pyg
 
 def load_graphml_files(years=[2021, 2022, 2023]):

@@ -45,7 +45,7 @@ def normalize_feature(train_batch, val_batch):
     val_batch.x = torch.tensor(node_scaler.transform(val_batch.x.numpy()), dtype=torch.float32)
 
     ### === Save scalers === ###
-    scaler_dir = os.path.join("scalers")
+    scaler_dir = os.path.join("src", "utils", "data_splits", "scalers", "2021_to_2023")
     os.makedirs(scaler_dir, exist_ok=True)
     joblib.dump(y_scaler, os.path.join(scaler_dir, "target_scaler.pkl"))
     joblib.dump(feat_scaler, os.path.join(scaler_dir, "edge_scaler.pkl"))
