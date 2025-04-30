@@ -94,7 +94,7 @@ def main():
     test_batch = Batch.from_data_list(test_data_list)
 
     # Normalize train and val together
-    train_batch, val_batch = normalize_train_val_data.normalize_feature(train_batch, val_batch)
+    train_batch, val_batch = normalize_train_val_data.normalize_feature_timedSplit(train_batch, val_batch)
 
     # Normalize test set separately (using train scaler)
     test_batch = normalize_test_data.normalize_test_features(test_batch)
