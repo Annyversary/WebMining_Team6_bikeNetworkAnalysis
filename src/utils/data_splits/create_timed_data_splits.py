@@ -63,7 +63,7 @@ def prepare_data(data_list, edge_attr_key_index=4):
     return prepared_list
 
 def main():
-    save_dir = os.path.join("..", "..", "..", "data", "data_splits")
+    save_dir = os.path.join("..", "..", "..", "data", "data_splits", "timed")
     os.makedirs(save_dir, exist_ok=True)
 
     train_save_path = os.path.join(save_dir, "train_data.pt")
