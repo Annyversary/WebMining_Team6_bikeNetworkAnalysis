@@ -2,7 +2,7 @@ import os
 import torch
 
 from torch_geometric.data import Batch
-from normalize_data.normalize_train_val_data import normalize_feature
+from normalize_data.normalize_train_val_data import normalize_feature_mixedSplit
 from helper_functions.load_graphml_files import load_graphml_files
 from helper_functions.print_datasplit_info import print_batch_shape
 
@@ -97,7 +97,7 @@ def main(years=[2021, 2022, 2023], val_ratio=0.2):
     None
     """
 
-    save_dir = os.path.join("data", "data_splits", "2021_to_2023")
+    save_dir = os.path.join("data", "data_splits", "2021_to_2023_split")
     os.makedirs(save_dir, exist_ok=True)
     train_save_path = os.path.join(save_dir, "train_data.pt")
     val_save_path = os.path.join(save_dir, "val_data.pt")
@@ -109,7 +109,7 @@ def main(years=[2021, 2022, 2023], val_ratio=0.2):
     train_data, val_data = split_train_val(data_list, val_ratio=val_ratio)
 
     # Normalize features in the training and validation data
-    train_data, val_data = normalize_feature(train_data, val_data)
+    train_data, val_data = normalize_feature_mixedSplit(train_data, val_data)
 
     print("\nTrain Data Statistics:")
     print_batch_shape(train_data)
