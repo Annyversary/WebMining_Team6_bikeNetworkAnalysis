@@ -1,16 +1,13 @@
 import os
 import torch
-import sys
-
-sys.path.append("src/utils")
 
 from torch_geometric.data import Batch
 from helper_functions.load_graphml_files import load_graphml_files
-from data_splits.normalize_test_data import normalize_test_features
-from data_splits.print_datasplit_info import print_batch_shape
+from normalize_data.normalize_test_data import normalize_test_features
+from helper_functions.print_datasplit_info import print_batch_shape
 
 def main(years=[2024]):
-    save_dir = os.path.join("data", "data_splits")
+    save_dir = os.path.join("data", "data_splits", "2021_to_2023_split")
     os.makedirs(save_dir, exist_ok=True)
     test_save_path = os.path.join(save_dir, "test_data.pt") 
 
