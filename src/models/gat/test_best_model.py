@@ -2,22 +2,17 @@ import torch
 import json
 import joblib
 import os
-import sys
-import import_ipynb
-
-src_path = os.path.abspath(os.path.join(os.getcwd(), "..",  ".."))
-if src_path not in sys.path:
-    sys.path.append(src_path)
 
 from torch_geometric.data import Data
-from models.gat.gatv2 import GATv2EdgePredictor
+from gatv2 import GATv2EdgePredictor
 
 
 # === Dateipfade ===
-config_path = "hpo_models/best_config_overall.json"
-model_path = "hpo_models/best_model_overall.pth"
-test_data_path = "../../../data/data_splits/test_data.pt"
-scaler_path = "../../utils/data_splits/scalers/target_scaler.pkl"
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+test_data_path = os.path.join(project_root, "data", "data_splits", "2021_to_2023_split","test_data.pt")
+scaler_path = os.path.join(project_root, "src", "utils", "data_splits", "scalers", "2021_to_2023", "target_scaler.pkl")
+config_path = os.path.join(project_root, "src", "models", "gat", "hpo_models", "best_config_overall.json")
+model_path = os.path.join(project_root, "src", "models", "gat", "hpo_models", "best_model_overall.pth")
 
 # === 1. Lade Testdaten ===
 test_data = torch.load(test_data_path, weights_only=False)
@@ -58,11 +53,11 @@ print(f"RMSE on test set (original scale): {rmse:.2f}")
 print("True values (first 10):", true_orig[:10].flatten())
 print("Predicted values (first 10):", pred_orig[:10].flatten())
 
-test_data = torch.load("../../../data/data_splits/test_data.pt", weights_only=False)
+test_data = torch.load(test_data_path, weights_only=False)
 print("y[:10] (scaled):", test_data.y[:10].flatten())
 print("y max (scaled):", torch.max(test_data.y))
 
-y_scaler = joblib.load("../../utils/data_splits/scalers/target_scaler.pkl")
+y_scaler = joblib.load(scaler_path)
 y_unscaled = y_scaler.inverse_transform(test_data.y.cpu().numpy())
 print("y[:10] (original scale):", y_unscaled[:10].flatten())
 print("Max y (original scale):", np.max(y_unscaled))

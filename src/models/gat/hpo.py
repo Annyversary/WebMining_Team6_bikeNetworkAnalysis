@@ -2,18 +2,12 @@ import os
 import random
 import json
 import torch
-import sys
-import import_ipynb
 import joblib
-
-src_path = os.path.abspath(os.path.join(os.getcwd(), "..",  ".."))
-if src_path not in sys.path:
-    sys.path.append(src_path)
 
 from gatv2 import GATv2EdgePredictor
 from sklearn.metrics import mean_squared_error, root_mean_squared_error
 
-def perform_hpo(train_data, val_data, search_space, num_trials=3, num_epochs=1000, early_stopping_patience=1, min_delta=0.01):
+def perform_hpo(train_data, val_data, search_space, num_trials=3, num_epochs=1000, early_stopping_patience=1, min_delta=0.01, project_root=os.path.join(os.path.dirname(__file__), "..", "..", "..")):
     """
     Performs random hyperparameter optimization for a GATv2 edge predictor model.
 
@@ -45,7 +39,8 @@ def perform_hpo(train_data, val_data, search_space, num_trials=3, num_epochs=100
     random.seed(42)
 
     # Create directory for saving models and configs
-    os.makedirs("hpo_models", exist_ok=True)
+    model_dir = os.path.join(project_root, "src", "models", "gat", "hpo_models")
+    os.makedirs(model_dir, exist_ok=True)
 
     best_overall_val_loss = float("inf")
     best_config = None
@@ -103,10 +98,14 @@ def perform_hpo(train_data, val_data, search_space, num_trials=3, num_epochs=100
                     val_mse = mean_squared_error(val_target.cpu().numpy(), val_pred.cpu().numpy())
 
                     # Compute RMSE in original scale
-                    y_scaler = joblib.load(os.path.join("..", "..", "utils", "helper_functions", "scalers", "target_scaler.pkl"))
+                    scaler_path = os.path.join(project_root, "src", "utils", "data_splits", "scalers", "2021_to_2023", "target_scaler.pkl")
+                    y_scaler = joblib.load(scaler_path)
+
                     val_pred_orig = y_scaler.inverse_transform(val_pred.cpu().numpy())
                     val_target_orig = y_scaler.inverse_transform(val_target.cpu().numpy())
                     val_rmse = root_mean_squared_error(val_target_orig, val_pred_orig)
+                    val_loss = val_mse
+
 
                 print(f"Epoch {epoch:03d} | Validation Loss: {val_mse:.4f} || RMSE (original scale): {val_rmse:.2f}")
 
@@ -132,9 +131,9 @@ def perform_hpo(train_data, val_data, search_space, num_trials=3, num_epochs=100
                 "trial": trial + 1,     # current trial number (1-based)
                 "val_loss": best_val_loss
             }
-            torch.save(model.state_dict(), "hpo_models/best_model_overall.pth")
-            with open("hpo_models/best_config_overall.json", "w") as f:
-                json.dump(best_config, f, indent=2)  # nicely formatted for readability
+            torch.save(model.state_dict(), os.path.join(model_dir, "best_model_overall.pth"))
+            with open(os.path.join(model_dir, "best_config_overall.json"), "w") as f:
+                json.dump(best_config, f, indent=2)
 
         # Clean up memory
         del model, optimizer, pred, target, val_pred, val_target, loss, val_loss
@@ -155,8 +154,12 @@ search_space = {
     # "dropout": [0.0, 0.1, 0.3, 0.5],           # Dropout
 }
 
-train_data = torch.load("../../../data/data_splits/train_data.pt", weights_only=False)
-val_data = torch.load("../../../data/data_splits/val_data.pt", weights_only=False)
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+train_data_path = os.path.join(project_root, "data", "data_splits", "2021_to_2023_split", "train_data.pt")
+val_data_path = os.path.join(project_root, "data", "data_splits", "2021_to_2023_split", "val_data.pt")
+
+train_data = torch.load(train_data_path, weights_only=False)
+val_data = torch.load(val_data_path, weights_only=False)
 
 # Define number of HPO trials and training settings
-perform_hpo(train_data, val_data, search_space, num_trials=3, num_epochs=1000, early_stopping_patience=3, min_delta = 0.1)
+perform_hpo(train_data, val_data, search_space, num_trials=1, num_epochs=3000, early_stopping_patience=3, min_delta = 0.1, project_root=project_root)
