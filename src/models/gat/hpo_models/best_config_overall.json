@@ -1,8 +1,8 @@
 {
-  "lr": 0.0001,
+  "lr": 0.001,
   "hidden_channels": 8,
   "out_channels": 8,
-  "heads": 4,
+  "heads": 2,
   "trial": 1,
-  "val_loss": 194.38604736328125
+  "val_loss": 27.628572463989258
 }

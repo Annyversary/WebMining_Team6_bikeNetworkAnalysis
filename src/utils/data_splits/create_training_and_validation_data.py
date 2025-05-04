@@ -40,6 +40,7 @@ def split_train_val(data_list, val_ratio=0.2, seed=42, edge_attr_key_index=4):
     total_val_edges = 0
 
     for i, data in enumerate(data_list):
+        print(f"\n[Split] Processing graph {i} with {data.edge_index.size(1)} edges and {data.num_nodes} nodes")
         edge_index = data.edge_index
         edge_attr = data.edge_attr
 
@@ -50,17 +51,27 @@ def split_train_val(data_list, val_ratio=0.2, seed=42, edge_attr_key_index=4):
         val_idx = perm[:num_val]
         train_idx = perm[num_val:]
 
+        print(f"[Split] {num_val} edges for validation, {len(train_idx)} for training")
+
         # Training Data
         train_data = data.clone()
         train_data.edge_index = edge_index[:, train_idx]
-        train_data.edge_attr = torch.cat([edge_attr[train_idx][:, :edge_attr_key_index], edge_attr[train_idx][:, edge_attr_key_index+1:]], dim=1)
+        train_data.edge_attr = torch.cat([
+            edge_attr[train_idx][:, :edge_attr_key_index], 
+            edge_attr[train_idx][:, edge_attr_key_index+1:]
+        ], dim=1)
         train_data.y = edge_attr[train_idx][:, edge_attr_key_index]
+        print(f"[Split] Train edge_attr shape: {train_data.edge_attr.shape}, y shape: {train_data.y.shape}")
 
         # Validation Data
         val_data = data.clone()
         val_data.edge_index = edge_index[:, val_idx]
-        val_data.edge_attr = torch.cat([edge_attr[val_idx][:, :edge_attr_key_index], edge_attr[val_idx][:, edge_attr_key_index+1:]], dim=1)
+        val_data.edge_attr = torch.cat([
+            edge_attr[val_idx][:, :edge_attr_key_index], 
+            edge_attr[val_idx][:, edge_attr_key_index+1:]
+        ], dim=1)
         val_data.y = edge_attr[val_idx][:, edge_attr_key_index]
+        print(f"[Split] Val edge_attr shape: {val_data.edge_attr.shape}, y shape: {val_data.y.shape}")
 
         train_list.append(train_data)
         val_list.append(val_data)
@@ -104,6 +115,7 @@ def main(years=[2021, 2022, 2023], val_ratio=0.2):
 
     # Load GraphML files for the specified years and convert to PyTorch Geometric Data objects
     data_list = load_graphml_files(years)
+    print(f"[Main] Loaded {len(data_list)} graphs")
 
     # Split data into train and validation sets
     train_data, val_data = split_train_val(data_list, val_ratio=val_ratio)
