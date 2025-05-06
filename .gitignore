@@ -6,3 +6,4 @@
 *.gfs
 __pycache__/
 *.pyc
+test_output/
