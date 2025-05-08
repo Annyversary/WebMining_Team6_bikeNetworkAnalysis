@@ -5,7 +5,7 @@ Features added:
 - Out-degree
 - Closeness centrality
 - K-core values
-- Betweenness centrality
+- Betweenness centrality (currently disabled for performance reasons)
 - Distance between nodes (edge feature, in meters)
 """
 
